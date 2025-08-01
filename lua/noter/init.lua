@@ -1,7 +1,7 @@
 local function on_md_create(args)
-    vim.print(args.buf)
-    vim.print(args.file)
-    vim.print(args.match)
+    print(args.buf)
+    print(args.file)
+    print(args.match)
 end
 
 vim.api.nvim_create_autocmd(
