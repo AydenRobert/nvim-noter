@@ -1,7 +1,6 @@
 local function on_md_create(args)
-    print(args.buf)
-    print(args.file)
-    print(args.match)
+    local filename = vim.fn.expand('%')
+    vim.print(filename)
 end
 
 vim.api.nvim_create_autocmd(
