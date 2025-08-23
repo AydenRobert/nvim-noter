@@ -1,29 +1,29 @@
-local setup = require('noter.setup')
-local cleanup = require('noter.cleanup')
-local files = require('noter.files')
+local function setup()
+  require('nvim-noter.core').scan_workspace()
+end
 
-vim.api.nvim_set_hl(0, "@shortcut.link.test", { bg = "#550000" })
+local augroup = vim.api.nvim_create_augroup('NvimNoter', { clear = true })
 
-vim.api.nvim_create_autocmd(
-    'BufNewFile',
-    {
-        pattern = "*.md",
-        callback = function(args) files.on_md_create(args) end,
-        desc = "this is a test autocommand"
-    }
-)
+vim.api.nvim_create_autocmd('VimEnter', {
+  group = augroup,
+  pattern = '*',
+  callback = function()
+    vim.defer_fn(setup, 0)
+  end,
+})
 
-vim.api.nvim_create_autocmd(
-    'VimEnter',
-    {
-        callback = function(args) setup.on_nvim_open(args) end,
-        desc = ""
-    }
-)
+vim.api.nvim_create_autocmd('BufWritePost', {
+  group = augroup,
+  pattern = '*.md',
+  callback = function(args)
+    require('nvim-noter.core').update_file(args.buf)
+  end,
+})
 
-vim.api.nvim_create_autocmd(
-    'VimLeavePre',
-    {
-        callback = function(args) cleanup.on_nvim_leave(args) end
-    }
-)
+vim.api.nvim_create_autocmd('BufNewFile', {
+    group = augroup,
+    pattern = '*.md',
+    callback = function(args)
+        print("NvimNoter: New note created!")
+    end
+})
